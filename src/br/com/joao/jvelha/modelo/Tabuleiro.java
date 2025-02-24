@@ -31,7 +31,31 @@ public class Tabuleiro {
 	public char[][] getTabuleiro() {
 		return tabuleiro;
 	}
-
+	
+	boolean verificarVitoria() {
+		char simboloJogador = jogador.getSimbolo();
+		
+		for (int i = 0; i < 2; i++) {
+			if(tabuleiro[i][0] == simboloJogador && tabuleiro[i][1] == simboloJogador &&  tabuleiro[i][2] == simboloJogador) {
+				return true;
+			}	
+		}
+		for (int i = 0; i < tabuleiro.length; i++) {
+			if(tabuleiro[0][i] == simboloJogador && tabuleiro[1][i] == simboloJogador &&  tabuleiro[0][i] == simboloJogador){
+				return true;
+			}
+		}
+		if(tabuleiro[0][0] == simboloJogador && tabuleiro[1][1] == simboloJogador && tabuleiro[2][2] == simboloJogador) {
+			return true;
+		}
+		
+		if(tabuleiro[0][2] == simboloJogador && tabuleiro[1][1] == simboloJogador && tabuleiro[2][0] == simboloJogador) {
+			return true;
+		}
+		
+		return false; 
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();

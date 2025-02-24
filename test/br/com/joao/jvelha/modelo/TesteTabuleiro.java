@@ -52,7 +52,7 @@ class TesteTabuleiro {
 	}
 	
 	@Test
-	void testAdicionarSimbolo() {
+	void testeAdicionarSimbolo() {
 		
 		for (int i = 1; i <= 9; i++) {
 			String[] coodernada = jogador.obterCoordenadas(i).split(",");
@@ -60,6 +60,43 @@ class TesteTabuleiro {
 			int coluna = Integer.parseInt(coodernada[1]);
 			assertTrue(tabuleiro.adicionarSimbolo(linha, coluna));
 			
+		}
+	}
+	
+	@Test
+	void testeVerificarVitoriaDiagonal1() {
+		tabuleiro.adicionarSimbolo(0, 0);
+		tabuleiro.adicionarSimbolo(1, 1);
+		tabuleiro.adicionarSimbolo(2, 2);
+		
+		assertTrue(tabuleiro.verificarVitoria());
+	}
+	
+	@Test
+	void testeVerificarVitoriaDiagonal2() {
+		tabuleiro.adicionarSimbolo(0, 2);
+		tabuleiro.adicionarSimbolo(1, 1);
+		tabuleiro.adicionarSimbolo(2, 0);
+		
+		assertTrue(tabuleiro.verificarVitoria());
+	}
+	@Test
+	void testeVerificarVitoriaLinha() {
+		for (int i = 0; i < 2; i++) {
+			tabuleiro.adicionarSimbolo(i, 2);
+			tabuleiro.adicionarSimbolo(i, 1);
+			tabuleiro.adicionarSimbolo(i, 0);
+			assertTrue(tabuleiro.verificarVitoria());
+		}
+	}
+	
+	@Test
+	void testeVerificarVitoriaColuna() {
+		for (int i = 0; i < 2; i++) {
+			tabuleiro.adicionarSimbolo(0, i);
+			tabuleiro.adicionarSimbolo(1, i);
+			tabuleiro.adicionarSimbolo(2, i);
+			assertTrue(tabuleiro.verificarVitoria());
 		}
 	}
 }
