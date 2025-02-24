@@ -2,27 +2,28 @@ package br.com.joao.jvelha.modelo;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.Objects;
 
 import br.com.joao.jvelha.excecao.CampoInvalidoException;
 
 public class Jogador {
 	private Tabuleiro tabuleiro;
+	private boolean turno = false;
 	private char simbolo;
 	
 	public Jogador(){
 		
 	}
 	
-	Jogador(Tabuleiro tabuleiro, char simbolo){
+	Jogador(Tabuleiro tabuleiro){
 		this.tabuleiro = tabuleiro;
-		this.simbolo = simbolo;
+		
 	}
 	
-	
-	
-//	boolean jogada(int campo) {
-//		
-//	}
+	void jogada(int campo) {
+		Iterator<Integer> jg = trasformarCampo(campo);
+		tabuleiro.adicionarSimbolo(jg.next(), jg.next());
+	}
 	
 	String obterCoordenadas(int campo) {
 		return switch (campo) {
@@ -58,11 +59,30 @@ public class Jogador {
 	public void setSimbolo(char simbolo) {
 		this.simbolo = simbolo;
 	}
-	
-	
-	
-	
-	
-	
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(simbolo);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Jogador other = (Jogador) obj;
+		return simbolo == other.simbolo;
+	}
+
+	public boolean isTurno() {
+		return turno;
+	}
+
+	public void setTurno(boolean turno) {
+		this.turno = turno;
+	}
 	
 }

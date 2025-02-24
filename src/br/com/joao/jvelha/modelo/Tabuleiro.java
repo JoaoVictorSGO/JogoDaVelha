@@ -16,7 +16,6 @@ public class Tabuleiro {
 		}
 	}
 
-	
 	boolean verificarCampo(int linha, int coluna ) {
 		return tabuleiro[linha][coluna] == ' ';
 	}
