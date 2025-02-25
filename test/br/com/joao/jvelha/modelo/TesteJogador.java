@@ -17,7 +17,7 @@ public class TesteJogador {
 	@BeforeEach
 	void iniciarJogador() {
 		tabuleiro = new Tabuleiro(jogador);
-		jogador = new Jogador(tabuleiro, 'x');
+		jogador = new Jogador(tabuleiro);
 		
 		
 	}

@@ -1,5 +1,6 @@
 package br.com.joao.jvelha.modelo;
 
+import br.com.joao.jvelha.excecao.ModoDeJogoException;
 import br.com.joao.jvelha.util.Contador;
 
 public class Jogo {
@@ -7,10 +8,15 @@ public class Jogo {
 	private Contador contador;
 	private Jogador jogador1;
 	private Jogador jogador2;
-	Jogo(Tabuleiro tabuleiro, Contador contador){
+	private int dificuldade;
+	private int modoDeJogo;
+	
+	
+	
+	public Jogo(Tabuleiro tabuleiro){
 		this.tabuleiro = tabuleiro;
-		this.contador = contador;
-		iniciazarContador();
+		
+		//iniciazarContador();
 		
 	}
 	
@@ -20,30 +26,55 @@ public class Jogo {
 		}
 	}
 	
-	void selecionarModoDeJogo(int modo) {
+	public Dificuldade tipoDeDificuldade(int dificuldade) {
+			this.dificuldade = dificuldade;
+			return switch (dificuldade) {
+			case 1 -> Dificuldade.FACIL;
+			case 2 -> Dificuldade.MEDIO;
+			case 3 -> Dificuldade.DIFICIL;
+			default -> throw new ModoDeJogoException();
+			};
+	}
+	
+	
+	public void selecionarModoDeJogo(int modo) {
 		if(modo == 1) {
-			jogador1 = new Jogador(tabuleiro);
-			jogador2 = new Jogador(tabuleiro);
-		}else {
 			
+			jogador1 = new JogadorHumano(tabuleiro);
+			jogador2 = new JogadorHumano(tabuleiro);
+			modo = 1;
+		}else {
+			jogador1 = new JogadorHumano(tabuleiro);
+			jogador2 = new IA(tabuleiro);
+			modo = 2;
 		}
 	}
-	void selecionarSimbolo(char simbolo) {
+	
+	public void selecionarSimbolo(char simbolo) {
+		
 		jogador1.setSimbolo(simbolo);
 		jogador2.setSimbolo(simbolo == 'x' ? 'o' : 'x');
 	}
 	
-	private void sortearJogadorInicial() {
+	public void sortearJogadorInicial() {
 		boolean aleatorio = Math.random() < 0.5;
 		jogador1.setTurno(aleatorio);
 		jogador2.setTurno(!aleatorio);
 		
 	}
 	
-	void jogada(int coluna) {
+	public void reniciarJogo() {
+		jogador1 = null;
+		jogador2 = null;
+		tabuleiro.reniciarTabuleiro();
+	}
+	
+	public void jogada(int coluna) {
 		if(jogador1.isTurno()) {
+			tabuleiro.setJogador(jogador1);
 			jogadaDoJogador1(coluna);
 		}else {
+			tabuleiro.setJogador(jogador2);
 			jogadaDoJogador2(coluna);
 		}
 	}
@@ -58,5 +89,18 @@ public class Jogo {
 		jogador2.setTurno(false);
 		jogador1.setTurno(true);
 	}
+	public int getModoDeJogo() {
+		return modoDeJogo;
+	}
+
+	public Jogador getJogador1() {
+		return jogador1;
+	}
+
+	public Jogador getJogador2() {
+		return jogador2;
+	}
+	
+	
 	
 }

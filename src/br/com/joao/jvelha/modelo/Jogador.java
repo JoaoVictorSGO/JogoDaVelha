@@ -6,18 +6,14 @@ import java.util.Objects;
 
 import br.com.joao.jvelha.excecao.CampoInvalidoException;
 
-public class Jogador {
+public abstract class Jogador  {
 	private Tabuleiro tabuleiro;
 	private boolean turno = false;
+	private int numeroDeVitorias;
 	private char simbolo;
-	
-	public Jogador(){
-		
-	}
 	
 	Jogador(Tabuleiro tabuleiro){
 		this.tabuleiro = tabuleiro;
-		
 	}
 	
 	void jogada(int campo) {
@@ -84,5 +80,6 @@ public class Jogador {
 	public void setTurno(boolean turno) {
 		this.turno = turno;
 	}
+	
 	
 }
