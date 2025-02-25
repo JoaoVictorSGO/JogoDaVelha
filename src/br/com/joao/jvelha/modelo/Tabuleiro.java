@@ -46,6 +46,7 @@ public class Tabuleiro {
 			}else {
 				 simboloJogador = 'o';
 			}
+			
 			for (int i = 0; i < 2; i++) {
 				if (tabuleiro[i][0] == simboloJogador && tabuleiro[i][1] == simboloJogador
 						&& tabuleiro[i][2] == simboloJogador) {
@@ -54,7 +55,7 @@ public class Tabuleiro {
 			}
 			for (int i = 0; i < tabuleiro.length; i++) {
 				if (tabuleiro[0][i] == simboloJogador && tabuleiro[1][i] == simboloJogador
-						&& tabuleiro[0][i] == simboloJogador) {
+						&& tabuleiro[2][i] == simboloJogador) {
 					return true;
 				}
 			}

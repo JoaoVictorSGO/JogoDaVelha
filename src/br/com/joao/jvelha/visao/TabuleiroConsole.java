@@ -60,6 +60,7 @@ public class TabuleiroConsole {
 			}
 			System.out.println(tabuleiro);
 			System.out.println("fim!");
+			System.out.println(!tabuleiro.verificarVitoria());
 			jogo.reniciarJogo();
 		} catch (Exception e) {
 			System.out.println(e.getMessage());
