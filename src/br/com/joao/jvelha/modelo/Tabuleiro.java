@@ -36,17 +36,11 @@ public class Tabuleiro {
 	}
 	
 	public boolean verificarVitoria() {
-		char simboloJogador = ' ';
+		char[] simbolo = {'x', 'o'};
 		
-		for (int c = 0; c < 2; c++) {
-			if(c == 0) {
-				 simboloJogador = 'x';
-			}else {
-				 simboloJogador = 'o';
-			}
-			
+		for (char simboloJogador : simbolo) {
 			//Linhas
-			for (int i = 0; i < 2; i++) {
+			for (int i = 0; i < 3; i++) {
 				if (tabuleiro[i][0] == simboloJogador && tabuleiro[i][1] == simboloJogador
 						&& tabuleiro[i][2] == simboloJogador) {
 					return true;
@@ -54,7 +48,7 @@ public class Tabuleiro {
 			}
 			
 			//Colunas
-			for (int i = 0; i < tabuleiro.length; i++) {
+			for (int i = 0; i < 3; i++) {
 				if (tabuleiro[0][i] == simboloJogador && tabuleiro[1][i] == simboloJogador
 						&& tabuleiro[2][i] == simboloJogador) {
 					return true;
