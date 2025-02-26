@@ -7,19 +7,17 @@ import java.util.Objects;
 import br.com.joao.jvelha.excecao.CampoInvalidoException;
 
 public abstract class Jogador  {
-	private Tabuleiro tabuleiro;
-	private boolean turno = false;
-	private int numeroDeVitorias;
-	private char simbolo;
+	protected Tabuleiro tabuleiro;
+	protected boolean turno = false;
+	protected boolean vitoria = false;
+	protected char simbolo;
 	
 	Jogador(Tabuleiro tabuleiro){
 		this.tabuleiro = tabuleiro;
 	}
 	
-	void jogada(int campo) {
-		Iterator<Integer> jg = trasformarCampo(campo);
-		tabuleiro.adicionarSimbolo(jg.next(), jg.next());
-	}
+	public abstract void jogada(int coluna);
+	
 	
 	String obterCoordenadas(int campo) {
 		return switch (campo) {
@@ -79,6 +77,14 @@ public abstract class Jogador  {
 
 	public void setTurno(boolean turno) {
 		this.turno = turno;
+	}
+
+	public boolean isVitoria() {
+		return vitoria;
+	}
+
+	public void setVitoria(boolean vitoria) {
+		this.vitoria = vitoria;
 	}
 	
 	

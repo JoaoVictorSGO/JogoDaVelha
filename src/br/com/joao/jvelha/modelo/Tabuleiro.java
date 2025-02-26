@@ -6,10 +6,6 @@ public class Tabuleiro {
 	public Tabuleiro() {
 		inicializarTabuleiro();
 	}
-	public Tabuleiro(Jogador jogador) {
-		this.jogador = jogador;
-		inicializarTabuleiro();
-	}
 
 	private void inicializarTabuleiro() {
 		for (int linha = 0; linha < tabuleiro.length; linha++) {
@@ -30,9 +26,11 @@ public class Tabuleiro {
 		}
 		return false;
 	}
+	
 	void reniciarTabuleiro() {
 		inicializarTabuleiro();
 	}
+	
 	public char[][] getTabuleiro() {
 		return tabuleiro;
 	}
@@ -47,34 +45,49 @@ public class Tabuleiro {
 				 simboloJogador = 'o';
 			}
 			
+			//Linhas
 			for (int i = 0; i < 2; i++) {
 				if (tabuleiro[i][0] == simboloJogador && tabuleiro[i][1] == simboloJogador
 						&& tabuleiro[i][2] == simboloJogador) {
 					return true;
 				}
 			}
+			
+			//Colunas
 			for (int i = 0; i < tabuleiro.length; i++) {
 				if (tabuleiro[0][i] == simboloJogador && tabuleiro[1][i] == simboloJogador
 						&& tabuleiro[2][i] == simboloJogador) {
 					return true;
 				}
 			}
+			
+			//Diagonal 1
 			if (tabuleiro[0][0] == simboloJogador && tabuleiro[1][1] == simboloJogador
 					&& tabuleiro[2][2] == simboloJogador) {
 				return true;
 			}
-
+			
+			//Diagonal 2
 			if (tabuleiro[0][2] == simboloJogador && tabuleiro[1][1] == simboloJogador
 					&& tabuleiro[2][0] == simboloJogador) {
 				return true;
 			}
+			
 		}
 		return false;
 	}
-
-	public Jogador getJogador() {
-		return jogador;
+	
+	public boolean verificarVelha() {
+		for (int linha = 0; linha < tabuleiro.length; linha++) {
+			for (int coluna = 0; coluna < tabuleiro.length; coluna++) {
+				if(tabuleiro[linha][coluna] == ' ') {
+					return false;
+				}
+			}
+		}
+		return true;
 	}
+
 	public void setJogador(Jogador jogador) {
 		this.jogador = jogador;
 	}

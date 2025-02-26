@@ -8,7 +8,6 @@ public class Jogo {
 	private Contador contador;
 	private Jogador jogador1;
 	private Jogador jogador2;
-	private int dificuldade;
 	private int modoDeJogo;
 	
 	
@@ -26,32 +25,39 @@ public class Jogo {
 		}
 	}
 	
+	public void selecionarModoDeJogo() {
+		if(modoDeJogo == 1) {
+			jogador1 = new JogadorHumano(tabuleiro);
+			jogador2 = new JogadorHumano(tabuleiro);
+		}else {
+			jogador1 = new JogadorHumano(tabuleiro);
+			jogador2 = new IA(tabuleiro);
+		}
+	}
+	
+	public void selecionarModoDeJogo(int dificuldade) {
+		if(modoDeJogo == 1) {
+			
+			jogador1 = new JogadorHumano(tabuleiro);
+			jogador2 = new JogadorHumano(tabuleiro);
+			
+		}else {
+			jogador1 = new JogadorHumano(tabuleiro);
+			jogador2 = new IA(tabuleiro, tipoDeDificuldade(dificuldade));
+			
+		}
+	}
+	
 	public Dificuldade tipoDeDificuldade(int dificuldade) {
-			this.dificuldade = dificuldade;
-			return switch (dificuldade) {
+		return switch (dificuldade) {
 			case 1 -> Dificuldade.FACIL;
 			case 2 -> Dificuldade.MEDIO;
 			case 3 -> Dificuldade.DIFICIL;
 			default -> throw new ModoDeJogoException();
-			};
-	}
-	
-	
-	public void selecionarModoDeJogo(int modo) {
-		if(modo == 1) {
-			
-			jogador1 = new JogadorHumano(tabuleiro);
-			jogador2 = new JogadorHumano(tabuleiro);
-			modo = 1;
-		}else {
-			jogador1 = new JogadorHumano(tabuleiro);
-			jogador2 = new IA(tabuleiro);
-			modo = 2;
-		}
-	}
+		};
+}
 	
 	public void selecionarSimbolo(char simbolo) {
-		
 		jogador1.setSimbolo(simbolo);
 		jogador2.setSimbolo(simbolo == 'x' ? 'o' : 'x');
 	}
@@ -72,25 +78,34 @@ public class Jogo {
 	public void jogada(int coluna) {
 		if(jogador1.isTurno()) {
 			tabuleiro.setJogador(jogador1);
-			jogadaDoJogador1(coluna);
+			jogador1.jogada(coluna);
+			jogador1.setTurno(false);
+			jogador2.setTurno(true);
 		}else {
 			tabuleiro.setJogador(jogador2);
-			jogadaDoJogador2(coluna);
+			jogador2.jogada(coluna); 
+			jogador2.setTurno(false);
+			jogador1.setTurno(true);
 		}
 	}
+	public void jogadaIA() {
+			tabuleiro.setJogador(jogador2);
+			jogador2.jogada(0); 
+			jogador2.setTurno(false);
+			jogador1.setTurno(true);
+	}
 	
-	void jogadaDoJogador1(int coluna) {
-		jogador1.jogada(coluna);
-		jogador1.setTurno(false);
-		jogador2.setTurno(true);
-	}
-	void jogadaDoJogador2(int coluna) {
-		jogador2.jogada(coluna);
-		jogador2.setTurno(false);
-		jogador1.setTurno(true);
-	}
+//	public boolean VerificarVencedor() {
+//		
+//	}
+	
+	
 	public int getModoDeJogo() {
 		return modoDeJogo;
+	}
+
+	public void setModoDeJogo(int modoDeJogo) {
+		this.modoDeJogo = modoDeJogo;
 	}
 
 	public Jogador getJogador1() {
