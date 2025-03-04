@@ -1,49 +1,53 @@
 package br.com.joao.jvelha.modelo;
 
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+
 import br.com.joao.jvelha.excecao.ModoDeJogoException;
 import br.com.joao.jvelha.util.Contador;
 
 public class Jogo {
 	private Tabuleiro tabuleiro;
+	private JogadorHumano jogador1;
+	private JogadorHumano jogador2;
+	private IA jogadorIA;
 	private Contador contador;
-	private Jogador jogador1;
-	private Jogador jogador2;
-	private int modoDeJogo;
+	private Integer modoDeJogo;
+	private Integer rodada = 1;
 	
 	
 	
 	public Jogo(Tabuleiro tabuleiro){
 		this.tabuleiro = tabuleiro;
-		
-		//iniciazarContador();
-		
+		this.contador = new Contador();
 	}
 	
-	void iniciazarContador() { 
-		for(int i = 0;i < 3665; i++) {
-			System.out.println(contador.iniciazarContador());
+	public CompletableFuture<String> inicializarContador() {
+		return contador.iniciarComTempoMaximo(10, this::passarVez);
+	}
+	
+	public void pararContador() {
+		contador.pararContador();
+	}
+	private void modoDeJogoHumano() {
+		jogador1 = new JogadorHumano(tabuleiro);
+		if(modoDeJogo == 1) {
+			jogador2 = new JogadorHumano(tabuleiro);
 		}
 	}
 	
 	public void selecionarModoDeJogo() {
-		if(modoDeJogo == 1) {
-			jogador1 = new JogadorHumano(tabuleiro);
-			jogador2 = new JogadorHumano(tabuleiro);
-		}else {
-			jogador1 = new JogadorHumano(tabuleiro);
-			jogador2 = new IA(tabuleiro);
-		}
+		modoDeJogoHumano();
 	}
 	
+	private boolean isModoHumanoVsHumano() {
+	    return modoDeJogo == 1;
+	}
+
 	public void selecionarModoDeJogo(int dificuldade) {
-		if(modoDeJogo == 1) {
-			
-			jogador1 = new JogadorHumano(tabuleiro);
-			jogador2 = new JogadorHumano(tabuleiro);
-			
-		}else {
-			jogador1 = new JogadorHumano(tabuleiro);
-			jogador2 = new IA(tabuleiro, tipoDeDificuldade(dificuldade));
+		modoDeJogoHumano();
+		if(!isModoHumanoVsHumano()) {
+			jogadorIA = new IA(tabuleiro, tipoDeDificuldade(dificuldade));
 			
 		}
 	}
@@ -53,46 +57,85 @@ public class Jogo {
 			case 1 -> Dificuldade.FACIL;
 			case 2 -> Dificuldade.MEDIO;
 			case 3 -> Dificuldade.DIFICIL;
-			default -> throw new ModoDeJogoException();
+			default -> throw new ModoDeJogoException("Dificuldade inválida: " + dificuldade);
 		};
 }
 	
 	public void selecionarSimbolo(char simbolo) {
-		jogador1.setSimbolo(simbolo);
-		jogador2.setSimbolo(simbolo == 'x' ? 'o' : 'x');
+		char simboloAdversario = simbolo == 'x' ? 'o' : 'x';
+		
+		if(isModoHumanoVsHumano()) {
+			jogador1.setSimbolo(simbolo);
+			jogador2.setSimbolo(simboloAdversario);
+		}else {
+			jogador1.setSimbolo(simbolo);
+			jogadorIA.setSimbolo(simboloAdversario);
+		}
+		
+		
 	}
 	
 	public void sortearJogadorInicial() {
 		boolean aleatorio = Math.random() < 0.5;
-		jogador1.setTurno(aleatorio);
-		jogador2.setTurno(!aleatorio);
 		
+		if(isModoHumanoVsHumano()) {
+			jogador1.setTurno(aleatorio);
+			jogador2.setTurno(!aleatorio);
+		}else {
+			jogador1.setTurno(aleatorio);
+			jogadorIA.setTurno(!aleatorio);
+		}
 	}
 	
-	public void reniciarJogo() {
+	public void reiniciarJogo() {
 		jogador1 = null;
 		jogador2 = null;
+		modoDeJogo = 0;
+		rodada = 1;
 		tabuleiro.reniciarTabuleiro();
 	}
 	
-	public void jogada(int coluna) {
-		if(jogador1.isTurno()) {
-			tabuleiro.setJogador(jogador1);
-			jogador1.jogada(coluna);
+	private void passarVez() {
+		if(jogadorIA != null && jogadorIA.isTurno()) {
+			jogadorIA.setTurno(false);
+			jogador1.setTurno(true);
+		}else if(jogador1.isTurno() && jogadorIA != null) {
+			jogador1.setTurno(false);
+			jogadorIA.setTurno(true);
+		
+		}else if (jogador2 != null && jogador2.isTurno() ){
+			jogador2.setTurno(false);
+			jogador1.setTurno(true);
+	
+		}else {
 			jogador1.setTurno(false);
 			jogador2.setTurno(true);
+		}
+		
+		
+	}
+	
+	public void jogada(int posicao) {
+		
+		if(jogador1.isTurno()) {
+			tabuleiro.setJogador(jogador1);
+			jogador1.jogada(posicao);
+			passarVez();
+			
 		}else {
-			tabuleiro.setJogador(jogador2);
-			jogador2.jogada(coluna); 
-			jogador2.setTurno(false);
-			jogador1.setTurno(true);
+			if(Objects.equals(modoDeJogo, 1)) {
+				tabuleiro.setJogador(jogador2);
+				contador.iniciarContador();
+				jogador2.jogada(posicao);
+				passarVez();
+			}
 		}
 	}
+	
 	public void jogadaIA() {
-			tabuleiro.setJogador(jogador2);
-			jogador2.jogada(0); 
-			jogador2.setTurno(false);
-			jogador1.setTurno(true);
+			tabuleiro.setJogador(jogadorIA);
+			jogadorIA.jogadaIA();
+			passarVez();
 	}
 	
 //	public boolean VerificarVencedor() {
@@ -114,6 +157,14 @@ public class Jogo {
 
 	public Jogador getJogador2() {
 		return jogador2;
+	}
+
+	public int getRodada() {
+		return rodada;
+	}
+
+	public void setRodada(int rodada) {
+		this.rodada = rodada;
 	}
 	
 	

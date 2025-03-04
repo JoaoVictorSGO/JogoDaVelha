@@ -16,11 +16,12 @@ public class Tabuleiro {
 	}
 
 	boolean verificarCampo(int linha, int coluna ) {
+		
 		return tabuleiro[linha][coluna] == ' ';
 	}
 	
 	boolean adicionarSimbolo(int linha, int coluna) {
-		if(verificarCampo(linha, coluna)) {
+		if(verificarCampo(linha, coluna) ) {
 			tabuleiro[linha][coluna] = jogador.getSimbolo();
 			return true;
 		}
