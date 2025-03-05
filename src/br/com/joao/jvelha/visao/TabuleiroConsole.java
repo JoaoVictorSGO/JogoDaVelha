@@ -1,6 +1,9 @@
 package br.com.joao.jvelha.visao;
 
 import java.util.Scanner;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import br.com.joao.jvelha.excecao.SairException;
 import br.com.joao.jvelha.modelo.Jogo;
@@ -14,14 +17,14 @@ public class TabuleiroConsole {
             "\n3 - Difícil";
     private static final String ESCOLHA_OPCAO_JOGO_MSG = "1 - Humano / 2 - Computador?";
     private static final String ESCOLHA_CAMPO_MSG = "Digite um campo (1-9)";
-    
     private Tabuleiro tabuleiro;
     private Jogo jogo;
     private Scanner entrada = new Scanner(System.in);
-    
+    private int rodadaConsole;
     public TabuleiroConsole(Tabuleiro tabuleiro, Jogo jogo) {
         this.jogo = jogo;
         this.tabuleiro = tabuleiro;
+        this.rodadaConsole = jogo.getRodada();
         executarJogo();
     }
 
@@ -36,7 +39,7 @@ public class TabuleiroConsole {
             System.out.println(e.getMessage());
         }
     }
-
+    
     private void cicloDoJogo() {
         try {
             System.out.println("------ Bem Vindo! ------");
@@ -69,14 +72,17 @@ public class TabuleiroConsole {
         int digitado;
         
         do {
+        	
             System.out.println(tabuleiro);
             if (jogo.getModoDeJogo() == 1) {
                 vezDoJogador();
-                tempoDeRodada();
-              
-                digitado = capturarValorDigitadoInt(ESCOLHA_CAMPO_MSG);   
+                tempoDeRodada();  
+                System.out.println("Rodada: " + jogo.getRodada());
+                digitado = capturarValorDigitadoInt(ESCOLHA_CAMPO_MSG);
                 jogo.pararContador();
                 jogo.jogada(digitado);
+				
+				
             } else {
                 if (jogo.getJogador1().isTurno()) {
                     System.out.println("Vez do Jogador 1");
@@ -111,34 +117,32 @@ public class TabuleiroConsole {
     }
     
     private void tempoDeRodada() {
-        jogo.inicializarContador().thenAccept(mensagem -> {
-            System.out.println(mensagem);
-            vezDoJogador();
-            System.out.println("Digite um campo (1-9)");
-            System.out.println(tabuleiro);
-            
-        });
-        
+    	int rodadaConsole = jogo.getRodada();
+		jogo.inicializarContador().thenAccept(mensagem -> {
+        System.out.println(mensagem);
+        vezDoJogador();
+        System.out.println(tabuleiro);
+        System.out.println("Digite um campo (1-9)"); 
+        if(rodadaConsole == jogo.getRodada()) {
+        	tempoDeRodada();
+        }
+		});
     }
 
-
+    private CompletableFuture<Integer> capturarValorDigitadoAsync(String texto) {
+    	return CompletableFuture.supplyAsync(() -> capturarValorDigitadoInt(texto));
+    	
+    	
+    	
+    }
     
     private int capturarValorDigitadoInt(String texto) {
-        int digitado = -1;
-        
-        while (digitado == -1) {
-            System.out.println(texto);
-            
-            if (entrada.hasNextInt()) {
-                digitado = entrada.nextInt();
-            } else {
-                System.out.println("Entrada inválida! Digite um número válido.");
-                entrada.next();
-            }
-            
-            entrada.nextLine(); 
-        }
-        
+    	
+    	System.out.println(texto);
+    	rodadaConsole++;
+    	int digitado = entrada.nextInt();
+    	rodadaConsole++;
+    	entrada.nextLine();
         return digitado;
     }
 

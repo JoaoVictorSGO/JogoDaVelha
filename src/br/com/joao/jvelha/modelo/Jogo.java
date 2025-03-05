@@ -14,7 +14,7 @@ public class Jogo {
 	private Contador contador;
 	private Integer modoDeJogo;
 	private Integer rodada = 1;
-	
+	private static final int TEMPO_MAXIMO = 10;
 	
 	
 	public Jogo(Tabuleiro tabuleiro){
@@ -23,7 +23,7 @@ public class Jogo {
 	}
 	
 	public CompletableFuture<String> inicializarContador() {
-		return contador.iniciarComTempoMaximo(10, this::passarVez);
+		return contador.iniciarComTempoMaximo(TEMPO_MAXIMO	, this::passarVez);
 	}
 	
 	public void pararContador() {
@@ -120,13 +120,14 @@ public class Jogo {
 		if(jogador1.isTurno()) {
 			tabuleiro.setJogador(jogador1);
 			jogador1.jogada(posicao);
+			rodada++;
 			passarVez();
 			
 		}else {
 			if(Objects.equals(modoDeJogo, 1)) {
 				tabuleiro.setJogador(jogador2);
-				contador.iniciarContador();
 				jogador2.jogada(posicao);
+				rodada++;
 				passarVez();
 			}
 		}
@@ -135,6 +136,7 @@ public class Jogo {
 	public void jogadaIA() {
 			tabuleiro.setJogador(jogadorIA);
 			jogadorIA.jogadaIA();
+			rodada++;
 			passarVez();
 	}
 	
