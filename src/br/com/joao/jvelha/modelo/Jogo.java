@@ -111,26 +111,30 @@ public class Jogo {
 			jogador1.setTurno(false);
 			jogador2.setTurno(true);
 		}
-		
-		
 	}
 	
-	public void jogada(int posicao) {
-		
+	public boolean jogada(int posicao) {
 		if(jogador1.isTurno()) {
 			tabuleiro.setJogador(jogador1);
-			jogador1.jogada(posicao);
+			if(!jogador1.jogada(posicao)) {;
+				return false;
+			}
 			rodada++;
 			passarVez();
+			return true;
 			
 		}else {
 			if(Objects.equals(modoDeJogo, 1)) {
 				tabuleiro.setJogador(jogador2);
-				jogador2.jogada(posicao);
+				if(!jogador2.jogada(posicao)) {
+					return false;
+				};
 				rodada++;
 				passarVez();
+				return true;
 			}
 		}
+		return true;
 	}
 	
 	public void jogadaIA() {
@@ -168,7 +172,9 @@ public class Jogo {
 	public void setRodada(int rodada) {
 		this.rodada = rodada;
 	}
-	
-	
+
+	public IA getJogadorIA() {
+		return jogadorIA;
+	}
 	
 }

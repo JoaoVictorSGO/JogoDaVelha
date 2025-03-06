@@ -49,9 +49,8 @@ public class TabuleiroConsole {
 		} while(modoDeJogo == 9);
 		addMododeJogo(modoDeJogo);
 		configurarModoDeJogo();
-		String simbolo = null;
-		simbolo = capturarValorDigitado(ESCOLHA_SIMBOLO_MSG);
-		jogo.selecionarSimbolo(simbolo.charAt(0));
+		char simbolo = capturarValorDigitado(ESCOLHA_SIMBOLO_MSG);
+		jogo.selecionarSimbolo(simbolo);
 		jogo.sortearJogadorInicial();
 		jogar();
 		
@@ -87,9 +86,8 @@ public class TabuleiroConsole {
     	}else {
     		jogo.setModoDeJogo(modoDeJogo);
     	}
-    		
-    	jogo.setModoDeJogo(modoDeJogo);
     }
+    
     private void configurarModoDeJogo() {
         if (jogo.getModoDeJogo() == 2) {
             int dificuldade = capturarValorDigitadoInt(ESCOLHA_MODE_DE_JOGO_MSG);
@@ -103,10 +101,10 @@ public class TabuleiroConsole {
     }
     
     private void vezDoJogador() {
-   	 if (jogo.getJogador2().isTurno()) {
-            System.out.println("Vez do Jogador 2");
-        } else {
+   	 if (jogo.getJogador1().isTurno()) {
             System.out.println("Vez do Jogador 1");
+        } else {
+            System.out.println("Vez do Jogador 2");
         }
     }
     
@@ -124,7 +122,7 @@ public class TabuleiroConsole {
 		});
 	}
     
-    private String capturarValorDigitado(String texto) {
+    private char capturarValorDigitado(String texto) {
         System.out.println(texto);
         String digitado = entrada.nextLine();
         digitado = digitado.trim().toLowerCase();
@@ -135,7 +133,7 @@ public class TabuleiroConsole {
 			System.out.println(MSG_SOBRE_SIMBOLOS);
 			digitado = entrada.nextLine();
 		}
-        return digitado;
+        return digitado.charAt(0);
     }
     
     private int capturarValorDigitadoInt(String texto) {
@@ -146,7 +144,7 @@ public class TabuleiroConsole {
 			System.out.println("Digite uma opção!\n");
 		}
     	int digitado = entrada.nextInt();
-    	if(digitado == 9) {
+    	if(digitado == 10) {
     		throw new SairException(MSG_DE_SAIDA);
     	}
     	rodadaConsole++;
@@ -154,28 +152,38 @@ public class TabuleiroConsole {
     	
         return digitado;
     }
+    private void jogada() {
+    	if(jogo.getModoDeJogo() == 2 && jogo.getJogadorIA().isTurno() ) {
+    		jogo.jogadaIA();
+    	}else {
+    		int digitado;
+    		boolean jogada = true;;
+    		do{
+    			System.out.println("Rodada: " + jogo.getRodada());
+    			if(!jogada) {
+    				System.out.println("\nCampo Ocupadado! Digite novamente.\n");
+    				System.out.println(tabuleiro);
+    			}
+    			vezDoJogador();
+    			digitado = capturarValorDigitadoInt(ESCOLHA_CAMPO_MSG);
+    			jogada = jogo.jogada(digitado);
+    		}while(!jogada);
+    	}
+    }
     
     private void jogar() {
-        int digitado;
-        
         do {
-        	
+    
             System.out.println(tabuleiro);
             if (jogo.getModoDeJogo() == 1) {
-                vezDoJogador();
                 tempoDeRodada();  
-                System.out.println("Rodada: " + jogo.getRodada());
-                digitado = capturarValorDigitadoInt(ESCOLHA_CAMPO_MSG);
                 jogo.pararContador();
-                jogo.jogada(digitado);
+                jogada();
 				
 				
             } else {
                 if (jogo.getJogador1().isTurno()) {
-                    System.out.println("Vez do Jogador 1"); 
-                    System.out.println("Rodada: " + jogo.getRodada());
-                    digitado = capturarValorDigitadoInt(ESCOLHA_CAMPO_MSG);
-                    jogo.jogada(digitado);
+                    jogada();
                 } else {
                     System.out.println("Vez do adversário!");
                     jogo.jogadaIA();
@@ -188,17 +196,5 @@ public class TabuleiroConsole {
         System.out.println("Fim!");
         reiniciarJogo();
     }
-    
-
-    
-    
-    
-	
-   
-    
-    
-
-    
-    
-   
+ 
 }

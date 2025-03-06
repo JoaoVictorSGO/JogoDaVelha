@@ -7,9 +7,13 @@ public class JogadorHumano extends Jogador{
 	}
 	
 	
-	public void jogada(int posicao) {
+	public boolean jogada(int posicao) {
 		int[] coodenadas = transformarCampo(posicao);
+		if(!tabuleiro.verificarCampo(coodenadas[0], coodenadas[1])) {
+			return false;
+		}
 		tabuleiro.adicionarSimbolo(coodenadas[0], coodenadas[1]);
+		return true;
 	}
 
 
