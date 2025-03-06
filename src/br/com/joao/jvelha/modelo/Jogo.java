@@ -48,8 +48,8 @@ public class Jogo {
 		modoDeJogoHumano();
 		if(!isModoHumanoVsHumano()) {
 			jogadorIA = new IA(tabuleiro, tipoDeDificuldade(dificuldade));
-			
 		}
+		
 	}
 	
 	public Dificuldade tipoDeDificuldade(int dificuldade) {

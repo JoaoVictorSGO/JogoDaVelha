@@ -3,13 +3,14 @@ package br.com.joao.jvelha.modelo;
 import java.util.Objects;
 
 import br.com.joao.jvelha.excecao.CampoInvalidoException;
+import br.com.joao.jvelha.excecao.SairException;
 
 public abstract class Jogador  {
 	protected Tabuleiro tabuleiro;
 	protected boolean turno = false;
 	protected boolean vitoria = false;
 	protected char simbolo;
-	
+	private static final String MSG_CAMPO_SAIR = "\nThau!!!\n";
 	Jogador(Tabuleiro tabuleiro){
 		this.tabuleiro = tabuleiro;
 	}
@@ -19,7 +20,7 @@ public abstract class Jogador  {
 		int minPosicao = 1;
 		int maxPosicao = tabuleiro.getTabuleiro().length * tabuleiro.getTabuleiro()[0].length;
 		if (posicao < minPosicao || posicao > maxPosicao ) {
-			throw new CampoInvalidoException();
+			throw new SairException(MSG_CAMPO_SAIR);
 		}
 		int linha =(posicao - 1) / tabuleiro.getTabuleiro().length;
 		int coluna = (posicao - 1) % tabuleiro.getTabuleiro().length;	
