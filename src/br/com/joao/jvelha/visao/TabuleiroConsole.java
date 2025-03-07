@@ -35,7 +35,6 @@ public class TabuleiroConsole {
         this.rodadaConsole = jogo.getRodada();
         executarJogo();
     }
-
     
 	private void cicloDoJogo() {
 		int modoDeJogo = 0;
@@ -55,15 +54,18 @@ public class TabuleiroConsole {
 		jogar();
 		
 	}
+	
     private void regras(String texto) {
     	System.out.println(texto);
     }
+    
 	private void executarJogo() {
         try {
         	System.out.println();
             boolean continuar = true;
             while (continuar) {
                 cicloDoJogo();
+                continuarJogando("\nVocê deseja continuar?(s/n)\n");
             }
         } catch (SairException e) {
             System.out.println(e.getMessage());
@@ -75,6 +77,11 @@ public class TabuleiroConsole {
 			 System.err.println("Erro: Scanner já foi fechado!");
 		}catch (CampoInvalidoException e) {
 			System.out.println("Campo Invalido!");
+		}catch (NullPointerException  e) {
+			System.err.println("Alguns dos jogadores estão null" + e.getMessage());
+			e.printStackTrace();
+		}finally {
+			entrada.close();
 		}
     }
 	
@@ -96,6 +103,7 @@ public class TabuleiroConsole {
             jogo.selecionarModoDeJogo();
         }
     }
+    
     private void reiniciarJogo() {
     	jogo.reiniciarJogo();
     }
@@ -122,17 +130,27 @@ public class TabuleiroConsole {
 		});
 	}
     
+    private void continuarJogando(String texto) {
+    	System.out.println(texto);
+    	String digitado = entrada.nextLine();
+        digitado = digitado.trim().toLowerCase();
+    	if ("sair".equalsIgnoreCase(digitado) || "n".equalsIgnoreCase(digitado)) {
+            throw new SairException(MSG_DE_SAIDA);
+        }
+    	while(!digitado.equals("s")) {
+    		digitado = entrada.nextLine();
+    	}
+    }
+    
     private char capturarValorDigitado(String texto) {
         System.out.println(texto);
         String digitado = entrada.nextLine();
         digitado = digitado.trim().toLowerCase();
-        if ("sair".equalsIgnoreCase(digitado)) {
-            throw new SairException(MSG_DE_SAIDA);
-        }
         while (!digitado.equals("x") && !digitado.equals("o")) {
-			System.out.println(MSG_SOBRE_SIMBOLOS);
-			digitado = entrada.nextLine();
-		}
+        	System.out.println(MSG_SOBRE_SIMBOLOS);
+			digitado = entrada.nextLine();	
+        }
+       
         return digitado.charAt(0);
     }
     
@@ -144,7 +162,7 @@ public class TabuleiroConsole {
 			System.out.println("Digite uma opção!\n");
 		}
     	int digitado = entrada.nextInt();
-    	if(digitado == 10) {
+    	if(digitado == 0) {
     		throw new SairException(MSG_DE_SAIDA);
     	}
     	rodadaConsole++;
@@ -152,6 +170,7 @@ public class TabuleiroConsole {
     	
         return digitado;
     }
+    
     private void jogada() {
     	if(jogo.getModoDeJogo() == 2 && jogo.getJogadorIA().isTurno() ) {
     		jogo.jogadaIA();
@@ -173,14 +192,12 @@ public class TabuleiroConsole {
     
     private void jogar() {
         do {
-    
+ 
             System.out.println(tabuleiro);
             if (jogo.getModoDeJogo() == 1) {
                 tempoDeRodada();  
                 jogo.pararContador();
-                jogada();
-				
-				
+                jogada();	
             } else {
                 if (jogo.getJogador1().isTurno()) {
                     jogada();

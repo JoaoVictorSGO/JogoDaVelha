@@ -2,7 +2,6 @@ package br.com.joao.jvelha.modelo;
 
 import java.util.Objects;
 
-import br.com.joao.jvelha.excecao.CampoInvalidoException;
 import br.com.joao.jvelha.excecao.SairException;
 
 public abstract class Jogador  {
